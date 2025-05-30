@@ -37,7 +37,7 @@ export default function AuthPage() {
     if (error) {
       setErrorMsg(error.message)
     } else {
-      navigate('/profile')
+      navigate('/dashboard')
     }
   }
 
