@@ -3,7 +3,7 @@ import GridLayout from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import WeatherWidget from '../widgets/WeatherWidget'
-// import weitere Widgets hier, z.B.: import NotesWidget from '../widgets/NotesWidget'
+import WeatherSettingsForm from '../widgets/WeatherSettingsForm'
 
 export default function Dashboard() {
   const allowedSizes = [
@@ -113,17 +113,24 @@ export default function Dashboard() {
                   <div className="absolute w-full h-full backface-hidden bg-gray-800 rounded-xl p-4 shadow-lg">
                     {widget.type === 'weather' && (
                       <WeatherWidget
-                        openSettings={openSettingsFor === widget.id}
                         size={getSizeKey(widget.id)}
                       />
                     )}
-                    {/* Hier später andere Widget-Typen einfügen */}
                   </div>
 
                   {/* Rückseite */}
                   <div className="absolute w-full h-full rotate-y-180 backface-hidden bg-gray-800 rounded-xl shadow-lg flex flex-col justify-center items-center px-4 py-6">
                     <h2 className="text-2xl font-bold mb-1">{widget.type.toUpperCase()}</h2>
-                    <p className="text-lg text-gray-400 mb-6">{getWidgetSizeLabel(widget.id)}</p>
+                    <p className="text-lg text-gray-400 mb-4">{getWidgetSizeLabel(widget.id)}</p>
+
+                    {widget.type === 'weather' && openSettingsFor === widget.id && (
+                      <WeatherSettingsForm
+                        onSubmit={(newLocation) => {
+                          localStorage.setItem('weather-location', newLocation)
+                          setOpenSettingsFor(null)
+                        }}
+                      />
+                    )}
 
                     <div className="absolute inset-0 pointer-events-none animate-fade-in-delay">
                       <button

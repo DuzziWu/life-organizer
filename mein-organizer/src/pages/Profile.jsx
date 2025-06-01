@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../supabase'
 
 export default function Profile() {
   const { user, logout } = useAuth()

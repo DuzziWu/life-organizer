@@ -77,38 +77,40 @@ export default function WeatherWidget({ size }) {
     }
   }
 
-  const getDayName = (ts) => new Date(ts * 1000).toLocaleDateString('de-DE', { weekday: 'long' })
+  const getDayName = (ts) =>
+    new Date(ts * 1000).toLocaleDateString('de-DE', { weekday: 'long' })
 
   const getWeatherEmoji = (desc) => {
     const d = desc.toLowerCase()
     if (d.includes('regen')) return '🌧️'
-    if (d.includes('sonne')) return '☀️'
+    if (d.includes('sonne') || d.includes('klar')) return '☀️'
     if (d.includes('wolke')) return '☁️'
     if (d.includes('schnee')) return '❄️'
     if (d.includes('gewitter')) return '⛈️'
+    if (d.includes('nebel') || d.includes('dunst')) return '🌫️'
     return '🌡️'
   }
 
-  // 🧠 Mapping: OpenWeather iconCode => Lottie-Dateipfad (in /public/lottie/)
+  // IconCode zu Pfad in public/lottie
   const lottieMap = {
-    '01d': '/lottie/clear-day.json',
-    '01n': '/lottie/clear-night.json',
-    '02d': '/lottie/partly-cloudy-day.json',
-    '02n': '/lottie/partly-cloudy-night.json',
-    '03d': '/lottie/cloudy.json',
-    '03n': '/lottie/cloudy.json',
-    '04d': '/lottie/overcast.json',
-    '04n': '/lottie/overcast.json',
-    '09d': '/lottie/rain.json',
-    '09n': '/lottie/rain.json',
-    '10d': '/lottie/rain.json',
-    '10n': '/lottie/rain.json',
-    '11d': '/lottie/thunder.json',
-    '11n': '/lottie/thunder.json',
-    '13d': '/lottie/snow.json',
-    '13n': '/lottie/snow.json',
-    '50d': '/lottie/fog.json',
-    '50n': '/lottie/fog.json'
+    '01d': '/lottie/Weather-sunny.json',
+    '01n': '/lottie/Weather-sunny.json',
+    '02d': '/lottie/Weather-partly cloudy.json',
+    '02n': '/lottie/Weather-partly cloudy.json',
+    '03d': '/lottie/Weather-partly cloudy.json',
+    '03n': '/lottie/Weather-partly cloudy.json',
+    '04d': '/lottie/Weather-partly cloudy.json',
+    '04n': '/lottie/Weather-partly cloudy.json',
+    '09d': '/lottie/Weather-partly shower.json',
+    '09n': '/lottie/Weather-partly shower.json',
+    '10d': '/lottie/Weather-partly shower.json',
+    '10n': '/lottie/Weather-partly shower.json',
+    '11d': '/lottie/Weather-thunder.json',
+    '11n': '/lottie/Weather-thunder.json',
+    '13d': '/lottie/Weather-snow.json',
+    '13n': '/lottie/Weather-snow.json',
+    '50d': '/lottie/Weather-foggy.json',
+    '50n': '/lottie/Weather-foggy.json',
   }
 
   const renderWeatherBlock = (entry, isToday = false) => {
@@ -130,10 +132,16 @@ export default function WeatherWidget({ size }) {
             className="mb-1"
           />
         ) : (
-          <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="" className="w-16 h-16 mb-1" />
+          <img
+            src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
+            alt=""
+            className="w-16 h-16 mb-1"
+          />
         )}
         <p className="text-2xl font-bold">{Math.round(entry.main.temp)}°C</p>
-        <p className="text-sm mt-1">{getWeatherEmoji(desc)} {desc}</p>
+        <p className="text-sm mt-1">
+          {getWeatherEmoji(desc)} {desc}
+        </p>
         {rain !== null && <p className="text-sm text-blue-300">🌧 {rain}%</p>}
       </div>
     )
@@ -155,7 +163,9 @@ export default function WeatherWidget({ size }) {
         </div>
       )}
 
-      {!loading && !weather && <p className="text-red-400">Ort nicht gefunden.</p>}
+      {!loading && !weather && (
+        <p className="text-red-400">Ort nicht gefunden.</p>
+      )}
     </div>
   )
 }
