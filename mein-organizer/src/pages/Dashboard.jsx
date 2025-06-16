@@ -1,178 +1,100 @@
-import React, { useState } from 'react'
-import GridLayout from 'react-grid-layout'
-import 'react-grid-layout/css/styles.css'
-import 'react-resizable/css/styles.css'
-import WeatherWidget from '../widgets/WeatherWidget'
-import WeatherSettingsForm from '../widgets/WeatherSettingsForm'
+import { useState } from "react";
+import Sidebar from "../components/Sidebar";
+import WidgetGrid from "../components/WidgetGrid";
+
+const WIDGET_TYPES = [
+  {
+    id: "wetter",
+    title: "Wetter",
+    description: "Zeigt das aktuelle Wetter an.",
+  },
+  {
+    id: "mail",
+    title: "Mail",
+    description: "Deine neuesten E-Mails.",
+  },
+  {
+    id: "finanzen",
+    title: "Finanzen",
+    description: "Überblick über deine Finanzen.",
+  },
+  {
+    id: "kalender",
+    title: "Kalender",
+    description: "Deine nächsten Termine.",
+  },
+  {
+    id: "verein",
+    title: "Verein",
+    description: "Neuigkeiten aus deinem Verein.",
+  },
+];
 
 export default function Dashboard() {
-  const allowedSizes = [
-    { w: 3, h: 2 },
-    { w: 6, h: 2 },
-    { w: 6, h: 4 },
-  ]
-
-  const [layout, setLayout] = useState([
-    { i: 'widget-weather-1', x: 0, y: 0, w: 3, h: 2 },
-  ])
   const [widgets, setWidgets] = useState([
-    { id: 'widget-weather-1', type: 'weather' },
-  ])
-  const [editMode, setEditMode] = useState(false)
-  const [openSettingsFor, setOpenSettingsFor] = useState(null)
+    // Beispiel-Widget zu Beginn, kann leer sein
+    { id: 1, title: "Wetter", description: "Zeigt das aktuelle Wetter an." },
+  ]);
+  const [addOpen, setAddOpen] = useState(false);
 
-  const addWidget = (type = 'weather') => {
-    const newId = `widget-${type}-${Date.now()}`
-    const newWidget = { i: newId, x: 0, y: Infinity, w: 3, h: 2 }
-    setLayout((prev) => [...prev, newWidget])
-    setWidgets((prev) => [...prev, { id: newId, type }])
-  }
+  const addWidget = (widgetType) => {
+    setWidgets((prev) => [
+      ...prev,
+      {
+        id: Date.now() + Math.random(),
+        title: widgetType.title,
+        description: widgetType.description,
+      },
+    ]);
+    setAddOpen(false);
+  };
 
   const removeWidget = (id) => {
-    setLayout((prev) => prev.filter((w) => w.i !== id))
-    setWidgets((prev) => prev.filter((w) => w.id !== id))
-    if (openSettingsFor === id) setOpenSettingsFor(null)
-  }
-
-  const resizeWidget = (id, direction) => {
-    setLayout((prev) =>
-      prev.map((item) => {
-        if (item.i !== id) return item
-        const currentIndex = allowedSizes.findIndex((s) => s.w === item.w && s.h === item.h)
-        const newIndex = Math.min(allowedSizes.length - 1, Math.max(0, currentIndex + direction))
-        return { ...item, w: allowedSizes[newIndex].w, h: allowedSizes[newIndex].h }
-      })
-    )
-  }
-
-  const toggleSettings = (id) => {
-    setOpenSettingsFor((prev) => (prev === id ? null : id))
-  }
-
-  const getWidgetSizeLabel = (id) => {
-    const current = layout.find((w) => w.i === id)
-    const index = allowedSizes.findIndex((s) => s.w === current?.w && s.h === current?.h)
-    return ['Klein', 'Mittel', 'Groß'][index] || 'Unbekannt'
-  }
-
-  const getSizeKey = (id) => {
-    const current = layout.find((w) => w.i === id)
-    const index = allowedSizes.findIndex((s) => s.w === current?.w && s.h === current?.h)
-    return ['small', 'medium', 'large'][index] || 'small'
-  }
+    setWidgets((prev) => prev.filter((w) => w.id !== id));
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-4 py-8">
-      <h1 className="text-3xl font-bold text-green-400 text-center mb-4">Dein Dashboard</h1>
-
-      <div className="flex justify-center gap-4 mb-6">
-        <button
-          onClick={() => {
-            setEditMode((prev) => !prev)
-            setOpenSettingsFor(null)
-          }}
-          className={`px-4 py-2 rounded font-semibold ${
-            editMode ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-700 hover:bg-gray-600'
-          }`}
-        >
-          {editMode ? 'Bearbeitungsmodus verlassen' : 'Bearbeitungsmodus starten'}
-        </button>
-
-        {editMode && (
-          <button
-            onClick={() => addWidget('weather')}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-semibold"
-          >
-            Wetter-Widget hinzufügen
-          </button>
-        )}
-      </div>
-
-      <div className="flex justify-center">
-        <div className="w-full max-w-7xl px-4">
-          <GridLayout
-            className="layout"
-            layout={layout}
-            onLayoutChange={(newLayout) => setLayout(newLayout)}
-            cols={12}
-            rowHeight={100}
-            width={1200}
-            isDraggable={editMode}
-            isResizable={false}
-            margin={[10, 10]}
-            draggableCancel=".non-draggable"
-          >
-            {widgets.map((widget) => (
-              <div key={widget.id} className="relative perspective">
-                <div
-                  className={`relative w-full h-full transition-transform duration-500 transform-style preserve-3d ${
-                    editMode ? 'rotate-y-180' : ''
-                  }`}
-                >
-                  {/* Vorderseite */}
-                  <div className="absolute w-full h-full backface-hidden bg-gray-800 rounded-xl p-4 shadow-lg">
-                    {widget.type === 'weather' && (
-                      <WeatherWidget
-                        size={getSizeKey(widget.id)}
-                      />
-                    )}
-                  </div>
-
-                  {/* Rückseite */}
-                  <div className="absolute w-full h-full rotate-y-180 backface-hidden bg-gray-800 rounded-xl shadow-lg flex flex-col justify-center items-center px-4 py-6">
-                    <h2 className="text-2xl font-bold mb-1">{widget.type.toUpperCase()}</h2>
-                    <p className="text-lg text-gray-400 mb-4">{getWidgetSizeLabel(widget.id)}</p>
-
-                    {widget.type === 'weather' && openSettingsFor === widget.id && (
-                      <WeatherSettingsForm
-                        onSubmit={(newLocation) => {
-                          localStorage.setItem('weather-location', newLocation)
-                          setOpenSettingsFor(null)
-                        }}
-                      />
-                    )}
-
-                    <div className="absolute inset-0 pointer-events-none animate-fade-in-delay">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          removeWidget(widget.id)
-                        }}
-                        className="non-draggable pointer-events-auto absolute top-2 right-2 text-gray-300 hover:text-red-500 text-2xl"
-                      >
-                        ❌
-                      </button>
-                      <button
-                        onClick={() => resizeWidget(widget.id, -1)}
-                        disabled={getSizeKey(widget.id) === 'small'}
-                        className="non-draggable pointer-events-auto absolute bottom-2 left-2 text-white text-2xl"
-                      >
-                        ➖
-                      </button>
-                      <button
-                        onClick={() => resizeWidget(widget.id, 1)}
-                        disabled={getSizeKey(widget.id) === 'large'}
-                        className="non-draggable pointer-events-auto absolute bottom-2 right-2 text-white text-2xl"
-                      >
-                        ➕
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          toggleSettings(widget.id)
-                        }}
-                        className="non-draggable pointer-events-auto absolute top-2 left-2 text-white text-2xl"
-                      >
-                        ⚙️
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </GridLayout>
+    <div className="flex min-h-screen bg-neutral-900 font-sans">
+      <Sidebar />
+      <main className="flex-1 min-h-screen transition-all flex flex-col items-center py-10 ml-16">
+        <div className="w-full max-w-4xl flex flex-col gap-8">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-3xl font-bold text-neutral-100">Dein Dashboard</h1>
+            <button
+              className="px-4 py-2 rounded-xl bg-neutral-700 hover:bg-neutral-600 text-neutral-100 font-semibold transition"
+              onClick={() => setAddOpen(true)}
+            >
+              + Widget hinzufügen
+            </button>
+          </div>
+          <WidgetGrid widgets={widgets} onRemove={removeWidget} />
         </div>
-      </div>
+
+        {/* Add-Widget Modal */}
+        {addOpen && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <div className="bg-neutral-800 rounded-2xl p-8 w-full max-w-md flex flex-col gap-5">
+              <h2 className="text-xl font-semibold text-neutral-100 mb-2">Widget auswählen</h2>
+              {WIDGET_TYPES.map((w) => (
+                <button
+                  key={w.id}
+                  className="flex flex-col items-start p-4 rounded-xl hover:bg-neutral-700 transition"
+                  onClick={() => addWidget(w)}
+                >
+                  <span className="text-base text-neutral-100 font-medium">{w.title}</span>
+                  <span className="text-sm text-neutral-400">{w.description}</span>
+                </button>
+              ))}
+              <button
+                className="mt-4 px-4 py-2 rounded-xl bg-neutral-700 hover:bg-neutral-600 text-neutral-100 transition"
+                onClick={() => setAddOpen(false)}
+              >
+                Abbrechen
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
-  )
+  );
 }

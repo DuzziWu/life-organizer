@@ -1,25 +1,33 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence, LayoutGroup } from 'framer-motion'
-import AuthPage from './pages/AuthPage'
-import Profile from './pages/Profile'
-import WelcomePage from './pages/WelcomePage'
-import Dashboard from './pages/Dashboard'
+import { useAuth, AuthProvider } from "./context/AuthContext";
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-  const location = useLocation()
-
-  return (
-    <LayoutGroup>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<AuthPage />} />
-          <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </AnimatePresence>
-    </LayoutGroup>
-  )
+function PrivateRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <AuthPage />;
+  return children;
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<AuthPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
