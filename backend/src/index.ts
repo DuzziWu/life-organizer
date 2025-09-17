@@ -8,6 +8,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import compression from 'compression'
 import dotenv from 'dotenv'
+import { testSupabaseConnection } from './lib/supabase'
 
 // Load environment variables
 dotenv.config()
@@ -67,10 +68,14 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 })
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`)
   console.log(`📚 API Documentation: http://localhost:${PORT}/api`)
   console.log(`❤️  Health Check: http://localhost:${PORT}/health`)
+  
+  // Test Supabase connection and database schema
+  console.log('\n🔗 Testing Supabase connection...')
+  await testSupabaseConnection()
 })
 
 export default app
