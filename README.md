@@ -10,10 +10,15 @@ Eine moderne, personalisierbare Dashboard-Webapp zur Lebensorganisation mit eine
 - 🚀 **Onboarding Experience** - Animierte Willkommensseite mit Raketen-Launch
 - 🌍 **Deutsche Lokalisierung** - Vollständig deutschsprachige Benutzeroberfläche
 - 🛡️ **Protected Routes** - Sicherer Zugang zu geschützten Bereichen
+- 📊 **Widget-Dashboard** - Flexibles Grid-Layout mit 9 Spalten
+- 🎯 **Drag & Drop System** - Vollständige Drag & Drop Funktionalität für Widgets
+- 🌤️ **Wetter-Widget** - Echte Wetterdaten mit OpenWeatherMap API Integration
+- 🎨 **Live-Preview** - Visuelles Feedback beim Verschieben von Widgets
+- 🧭 **Kollisionserkennung** - Intelligente Positionierung verhindert Überlappungen
 
 ### 🚧 In Entwicklung
-- 📊 **Personalisiertes Dashboard** - Gestalte dein Dashboard wie einen Handy-Homescreen
-- 🧩 **Flexible Widgets** - Drag & Drop, Größenänderung, individuelle Anordnung
+- 🔧 **Erweiterte Widget-Konfiguration** - Individuelle Einstellungen pro Widget
+- 💾 **Daten-Synchronisation** - Persistierung der Widget-Positionen und -Konfigurationen
 
 ### 📅 Geplant
 - 📧 **Mail-Integration** - Alle deine Mail-Accounts an einem Ort
@@ -24,14 +29,19 @@ Eine moderne, personalisierbare Dashboard-Webapp zur Lebensorganisation mit eine
 
 ## 🚀 Geplante Widgets
 
-### MVP Widgets
+### ✅ Verfügbare Widgets
+- 🌤️ **Wetter** - Echte Wetterdaten mit 3-Tage Vorhersage (OpenWeatherMap API)
+  - Klein (1×1): Temperatur und Wetter-Icon
+  - Mittel (1×3): Aktuelles Wetter + 3-Tage Vorhersage
+  - Groß (3×3): Vollständige Wetterstation mit 4-Tage Vorhersage
+
+### MVP Widgets (geplant)
 - 📝 **Notizen** - Quick Notes und wichtige Erinnerungen
 - ✅ **To-Do Listen** - Aufgaben verwalten und abhaken
 - 🕐 **Uhr & Datum** - Aktuelle Zeit und Datum
 - 📧 **Mail Preview** - Neueste E-Mails anzeigen
 
-### Erweiterte Widgets
-- 🌤️ **Wetter** - Lokale Wettervorhersage
+### Erweiterte Widgets (geplant)
 - 📰 **News & RSS** - Personalisierte Nachrichten-Feeds
 - 💪 **Habits Tracker** - Gewohnheiten verfolgen
 - 💰 **Finance Overview** - Budget und Ausgaben im Blick
@@ -42,8 +52,9 @@ Eine moderne, personalisierbare Dashboard-Webapp zur Lebensorganisation mit eine
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS, Vite
 - **Backend**: Supabase (PostgreSQL + Auth + Real-time + Storage)
-- **Drag & Drop**: @hello-pangea/dnd
-- **State Management**: Zustand
+- **Drag & Drop**: HTML5 Drag & Drop API (custom implementation)
+- **Weather API**: OpenWeatherMap API
+- **State Management**: React Context + Zustand (planned)
 - **Authentication**: Supabase Auth
 - **Deployment**: Vercel (Frontend), Supabase (Backend)
 

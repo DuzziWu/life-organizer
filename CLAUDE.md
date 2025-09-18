@@ -42,7 +42,7 @@ This is a monorepo with separate frontend and backend workspaces:
 - **Authentication**: Supabase Auth with React Context (✅ IMPLEMENTED)
 - **State Management**: React Context (auth) ✅, Zustand (planned for widgets)
 - **Routing**: React Router v6 with protected routes (✅ IMPLEMENTED)
-- **Drag & Drop**: @hello-pangea/dnd for widget system (planned)
+- **Drag & Drop**: HTML5 Drag & Drop API with custom implementation (✅ IMPLEMENTED)
 - **UI Components**: Custom Liquid Glass components ✅ + Radix UI primitives (planned)
 - **Form Handling**: Custom forms with React state ✅ (React Hook Form + Zod planned)
 - **Animation**: Custom CSS animations with Tailwind ✅
@@ -69,7 +69,10 @@ This is a monorepo with separate frontend and backend workspaces:
 ### Widget System Architecture
 The core concept is a flexible widget system where:
 - Each widget follows a unified interface with type, position, size, and config
-- Widgets are draggable and resizable on a grid layout
+- **✅ Drag & Drop**: Widgets are fully draggable with HTML5 API and intelligent collision detection
+- **✅ Grid Layout**: Fixed 135px grid cells with 9 columns and intelligent positioning
+- **✅ Size Management**: Support for Small (1×1), Medium (1×3), and Large (3×3) widgets
+- **✅ Visual Feedback**: Live preview with cyan overlay and opacity changes during drag
 - Widget state management will use Zustand stores
 - Widget components are dynamically loaded based on type
 
@@ -91,6 +94,10 @@ This project is in active development with substantial progress:
 - First-Visit experience with animated rocket launch
 - Custom Liquid Glass UI components with futuristic design
 - Rocket animation matching reference design with smooth flight
+- **Complete widget system with drag & drop functionality**
+- **Weather widget with real OpenWeatherMap API integration**
+- **Grid-based layout system with intelligent collision detection**
+- **Visual drag feedback with live preview and positioning guides**
 
 **📋 DATABASE SCHEMA:**
 - `profiles` table for user profile data
@@ -101,16 +108,17 @@ This project is in active development with substantial progress:
 - Complete RLS policies for data security
 
 **🚧 IN PROGRESS:**
-- Widget system architecture planning
-- Dashboard layout implementation
+- Additional widget types (Calendar, Tasks, Notes)
+- Advanced widget configuration options
+- Widget data persistence and synchronization
 
 **📅 PLANNED:**
-- Drag & drop widget system
-- Calendar integration
-- Email management
-- Task/todo management
-- Weather widget
+- Calendar integration widget
+- Email management widget
+- Task/todo management widget
 - Notes widget
+- Weather forecast integration improvements
+- Widget store/marketplace concept
 
 ### Key Dependencies
 - **Frontend**: React 18, React Router, Radix UI, Framer Motion, React Hook Form, Zod
@@ -148,7 +156,43 @@ The app implements a complete German-localized authentication system:
 - `ProtectedRoute.tsx`: Route protection component
 - `LiquidGlassCard.tsx`: Reusable UI component with glass morphism effect
 
-## Animation System
+## Drag & Drop System
+
+### Widget Drag & Drop Implementation
+The widget system features a complete HTML5 drag & drop implementation:
+
+**Key Features:**
+- **Drag Handle**: Move icon (🔀) appears on widget hover in top-left corner
+- **Live Preview**: Cyan overlay shows valid drop positions in real-time
+- **Collision Detection**: Prevents overlapping widgets with intelligent boundary checking
+- **Grid Snapping**: Automatic alignment to 135px grid cells with 12px gaps
+- **Visual Feedback**: Dragged widget becomes 50% transparent during operation
+
+**Technical Implementation:**
+```typescript
+// Grid position calculation from mouse events
+const getGridPositionFromMouseEvent = (e: DragEvent) => {
+  const cellSize = 135, gap = 12
+  const gridX = Math.floor(relativeX / (cellSize + gap))
+  const gridY = Math.floor(relativeY / (cellSize + gap))
+  return { x: gridX, y: gridY }
+}
+
+// Collision detection for widget placement
+const canPlaceWidgetAt = (x, y, w, h, excludeId) => {
+  // Check grid bounds and widget overlaps
+  return !hasCollision && inBounds
+}
+```
+
+**User Experience:**
+1. Hover over widget → Move handle appears
+2. Drag handle → Widget follows with live preview
+3. Move over valid position → Cyan preview shows placement
+4. Drop → Widget snaps to grid position
+5. Database automatically updates with new position
+
+### Animation System
 
 ### Rocket Launch Animation
 The First-Visit page features a detailed rocket animation:
